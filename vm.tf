@@ -3,6 +3,18 @@ resource "null_resource" "provision_vm" {
     vm_public_ip = data.azurerm_public_ip.main.ip_address
   }
 
+  provisioner "file" {
+    source      = var.default_page_path
+    destination = "~/index.html"
+
+    connection {
+      type     = "ssh"
+      host     = var.ssh_user
+      user     = var.ssh_password
+      password = data.azurerm_public_ip.main.ip_address
+    }
+  }
+
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
@@ -14,8 +26,8 @@ resource "null_resource" "provision_vm" {
     inline = [
       "sudo apt-get update -y",
       "sudo apt-get install -y nginx",
-      "sudo systemctl enable --now nginx",
-      "cat ${path.module}/index.html"
+      "sudo mv ~/index.html /var/www/html/index.html",
+      "sudo systemctl restart nginx"
     ]
   }
 }

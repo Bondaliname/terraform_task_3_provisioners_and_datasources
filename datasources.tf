@@ -1,24 +1,29 @@
 data "azurerm_resource_group" "example" {
-  name = "example-resources"
+  name = var.resource_group_name
+}
+
+data "azurerm_virtual_machine" "main" {
+  name                = var.vm_name
+  resource_group_name = var.resource_group_name
 }
 
 data "azurerm_virtual_network" "main" {
-  name                = "example-network"
-  resource_group_name = data.azurerm_resource_group.example.name
+  name                = var.vnet_name
+  resource_group_name = var.resource_group_name
 }
 
 data "azurerm_subnet" "internal" {
-  name                 = "internal"
-  resource_group_name  = data.azurerm_resource_group.example.name
-  virtual_network_name = data.azurerm_virtual_network.main.name
+  name                 = var.subnet_name
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = var.vnet_name
 }
 
 data "azurerm_network_interface" "main" {
-  name                = "example-nic"
-  resource_group_name = data.azurerm_resource_group.example.name
+  name                = var.nic_name
+  resource_group_name = var.resource_group_name
 }
 
 data "azurerm_public_ip" "main" {
-  name                = "example-ip"
-  resource_group_name = data.azurerm_resource_group.example.name
+  name                = var.public_ip_name
+  resource_group_name = var.resource_group_name
 }
